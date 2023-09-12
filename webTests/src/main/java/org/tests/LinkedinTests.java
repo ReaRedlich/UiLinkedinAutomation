@@ -14,6 +14,8 @@ import org.testng.annotations.Test;
 public class LinkedinTests {
     private final String username = "{Please enter your username}";
     private final String password = "{Please enter your password}";
+
+    private WebDriver driver;
     private LoginPage loginPage;
     private FeedPage feedPage;
     private ProfilePage profilePage;
@@ -22,21 +24,23 @@ public class LinkedinTests {
     @BeforeTest
     public void setUp() {
         WebDriverManager.chromedriver().setup();
-        WebDriver driver = new ChromeDriver();
+        driver = new ChromeDriver();
         loginPage = new LoginPage(driver);
         feedPage = new FeedPage(driver);
         profilePage = new ProfilePage(driver);
         connectionsPage = new ConnectionsPage(driver);
+        loginPage.openLoginPage();
     }
 
     @AfterTest
     public void tearDown() {
-        loginPage.quitDriver();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 
     @Test
     public void test_extractConnectionsToJson() {
-        loginPage.openLoginPage();
         loginPage.login(username, password);
         feedPage.go_to_my_profile();
         profilePage.enter_to_profile_connections();
